@@ -13,11 +13,24 @@ enum TealiumConnectivityKey {
     static let moduleName = "connectivity"
     static let connectionType = "connection_type"
     static let wasQueued = "was_queued"
+    static let connectionTypeWifi = "wifi"
+    static let connectionTypeCell = "cellular"
+    static let connectionTypeNone = "none"
 }
 
 class TealiumConnectivityModule : TealiumModule {
     
     lazy var queue = [TealiumTrackRequest]()
+    static var connectionType: String?
+    static var isConnected: Bool?
+    
+    class func currentConnectionType() -> String {
+        let isConnected = TealiumConnectivityModule.isConnectedToNetwork()
+        if isConnected == true {
+            return self.connectionType!
+        }
+        return TealiumConnectivityKey.connectionTypeNone
+    }
     
     override class func moduleConfig() -> TealiumModuleConfig {
         return TealiumModuleConfig(name: TealiumConnectivityKey.moduleName,
@@ -109,6 +122,12 @@ class TealiumConnectivityModule : TealiumModule {
         }
         
         var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags(rawValue: 0)
+        if flags.contains(.isWWAN) == true {
+            self.connectionType = TealiumConnectivityKey.connectionTypeCell
+        } else if flags.contains(.connectionRequired) == false {
+            self.connectionType = TealiumConnectivityKey.connectionTypeWifi
+        }
+        
         if SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) == false {
             return false
         }
@@ -117,9 +136,9 @@ class TealiumConnectivityModule : TealiumModule {
         // Working for Cellular and WIFI
         let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
         let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        let ret = (isReachable && !needsConnection)
+        self.isConnected = (isReachable && !needsConnection)
         
-        return ret
+        return self.isConnected!
         
     }
     

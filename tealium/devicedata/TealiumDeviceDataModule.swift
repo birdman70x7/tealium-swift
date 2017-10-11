@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreTelephony
 
 enum TealiumDeviceDataModuleKey {
     static let moduleName = "devicedata"
@@ -179,14 +180,30 @@ class TealiumDeviceData {
     
     class func model() -> String {
         
-        
-        // TODO:
-        return ""
+        if let simulatorModelIdentifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
+                return simulatorModelIdentifier
+        }
+        var sysinfo = utsname()
+        uname(&sysinfo) // ignore return value
+        return String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
     }
     
     class func name() -> String {
         
         return UIDevice.current.model
+    }
+    
+    class func carrierInfo() -> Dictionary<String, String> {
+        let networkInfo = CTTelephonyNetworkInfo()
+        let connection = TealiumConnectivityModule.currentConnectionType()
+        let carrier = networkInfo.subscriberCellularProvider
+        return [
+            "carrier_mnc" : carrier?.mobileNetworkCode ?? "",
+            "carrier_mcc" : carrier?.mobileCountryCode ?? "",
+            "carrier_iso" : carrier?.isoCountryCode ?? "",
+            "carrier" : carrier?.carrierName ?? "",
+            "connection_type" : connection
+        ]
     }
     
     class func orientation() -> String {
