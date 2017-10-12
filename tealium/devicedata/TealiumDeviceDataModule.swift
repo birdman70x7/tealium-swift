@@ -243,11 +243,79 @@ class TealiumDeviceData {
             case "iPod7,1":
                 return "iPod Touch 6th Generation"
             // iPad
-            
+            case "iPad2,1":
+                return "iPad 2 Wifi (model A1432)"
+            case "iPad2,2":
+                return "iPad 2 GSM (model A1396)"
+            case "iPad2,3":
+                return "iPad 2 3G (model A1397)"
+            case "iPad2,4":
+                return "iPad 2 Wifi (model A1395)"
+            case "iPad2,5":
+                return "iPad Mini Wifi (model A1432)"
+            case "iPad2,6":
+                return "iPad Mini Wifi + Cellular (model  A1454)"
+            case "iPad2,7":
+                return "iPad Mini Wifi + Cellular (model  A1455)"
+            case "iPad3,1":
+                return "iPad 3 Wifi (model A1416)"
+            case "iPad3,2":
+                return "iPad 3 Wifi + Cellular (model  A1403)"
+            case "iPad3,3":
+                return "iPad 3 Wifi + Cellular (model  A1430)"
+            case "iPad3,4":
+                return "iPad 4 Wifi (model A1458)"
+            case "iPad3,5":
+                return "iPad 4 Wifi + Cellular (model  A1459)"
+            case "iPad3,6":
+                return "iPad 4 Wifi + Cellular (model  A1460)"
+            case "iPad4,1":
+                return "iPad Air Wifi (model A1474)"
+            case "iPad4,2":
+                return "iPad Air Wifi + Cellular (model A1475)"
+            case "iPad4,3":
+                return "iPad Air Wifi + Cellular (model A1476)"
+            case "iPad4,4":
+                return "iPad Mini 2 Wifi (model A1489)"
+            case "iPad4,5":
+                return "iPad Mini 2 Wifi + Cellular (model A1490)"
+            case "iPad4,6":
+                return "iPad Mini 2 Wifi + Cellular (model A1491)"
+            case "iPad4,7":
+                return "iPad Mini 3 Wifi (model A1599)"
+            case "iPad4,8":
+                return "iPad Mini 3 Wifi + Cellular (model A1600)"
+            case "iPad4,9":
+                return "iPad Mini 3 Wifi + Cellular (model A1601)"
+            case "iPad5,1":
+                return "iPad Mini 4 Wifi (model A1538)"
+            case "iPad5,2":
+                return "iPad Mini 4 Wifi + Cellular (model A1550)"
+            case "iPad5,3":
+                return "iPad Air 2 Wifi (model A1566)"
+            case "iPad5,4":
+                return "iPad Air 2 Wifi + Cellular (model A1567)"
+            case "iPad6,3":
+                return "iPad Pro 12.9\"Wifi (model A1673)"
+            case "iPad6,4":
+                return "iPad Pro 12.9\" Wifi + Cellular (model A1674, A1675)"
+            case "iPad6,7":
+                return "iPad Pro 9.7\"Wifi (model A1584)"
+            case "iPad6,8":
+                return "iPad Pro 9.7\" Wifi + Cellular (model A1652)"
             // Apple TV
-            default:
-                return "Unknown Device"
-            
+            case "AppleTV2,1":
+                return "Apple TV 2nd Generation"
+            case "AppleTV3,1":
+                return "Apple TV 3rd Generation"
+            case "AppleTV3,2":
+                return "Apple TV 3rd Generation"
+            case "AppleTV5,3":
+                return "Apple TV 4th Generation"
+            case "AppleTV6,2":
+                return "Apple TV 4K"
+            default:
+                return model
         }
     }
     
