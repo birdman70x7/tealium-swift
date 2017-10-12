@@ -62,7 +62,7 @@ class TealiumDeviceDataModule : TealiumModule {
         result[TealiumDeviceDataKey.model] = TealiumDeviceData.model()
         result[TealiumDeviceDataKey.name] = TealiumDeviceData.name()
         result[TealiumDeviceDataKey.osVersion] = TealiumDeviceData.oSVersion()
-
+        result[TealiumDeviceDataKey.osName] = TealiumDeviceData.oSName()
         return result
     }
     
@@ -102,6 +102,7 @@ enum TealiumDeviceDataKey {
     static let orientation = "device_orientation"
     static let osBuild = "device_os_build"
     static let osVersion = "device_os_version"
+    static let osName = "device_os_name"
     static let resolution = "device_resolution"
 }
 
@@ -375,6 +376,10 @@ class TealiumDeviceData {
     class func oSVersion() -> String {
         
         return UIDevice.current.systemVersion
+    }
+    
+    class func oSName() -> String {
+        return UIDevice.current.systemName
     }
     
 }
