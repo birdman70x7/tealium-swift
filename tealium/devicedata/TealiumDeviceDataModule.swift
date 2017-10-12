@@ -77,8 +77,12 @@ class TealiumDeviceDataModule : TealiumModule {
         result[TealiumDeviceDataKey.batteryPercent] = TealiumDeviceData.batteryPercent()
         result[TealiumDeviceDataKey.isCharging] = TealiumDeviceData.isCharging()
         result[TealiumDeviceDataKey.language] = TealiumDeviceData.iso639Language()
-        result[TealiumDeviceDataKey.orientation] = TealiumDeviceData.orientation()
-
+        result.merge(TealiumDeviceData.orientation()) { (_, new) -> Any in
+            new
+        }
+        result.merge(TealiumDeviceData.carrierInfo()) { (_, new) -> Any in
+            new
+        }
         return result
         
     }
@@ -114,7 +118,7 @@ class TealiumDeviceData {
     }
     
     class func batteryPercent() -> String {
-    
+        UIDevice.current.isBatteryMonitoringEnabled = true
         return String(describing: (UIDevice.current.batteryLevel * 100))
         
     }
@@ -179,13 +183,72 @@ class TealiumDeviceData {
     }
     
     class func model() -> String {
-        
+        var model = ""
         if let simulatorModelIdentifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
-                return simulatorModelIdentifier
+                model = simulatorModelIdentifier
         }
         var sysinfo = utsname()
         uname(&sysinfo) // ignore return value
-        return String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
+        model = String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
+        
+        switch model {
+            // iPhone
+            case "iPhone4,1":
+                return "iPhone 4S"
+            case "iPhone5,1":
+                return "iPhone 5 (model A1428, AT&T/Canada)"
+            case "iPhone5,2":
+                return "iPhone 5 (model A1429, everything else)"
+            case "iPhone5,3":
+                return "iPhone 5c (model A1456, A1532 | GSM)"
+            case "iPhone5,4":
+                return "iPhone 5c (model A1507, A1516, A1526 (China), A1529 | Global)"
+            case "iPhone6,1":
+                return "iPhone 5s (model A1433, A1533 | GSM)"
+            case "iPhone6,2":
+                return "iPhone 5s (model A1457, A1518, A1528 (China), A1530 | Global)"
+            case "iPhone7,1":
+                return "iPhone 6 Plus"
+            case "iPhone7,2":
+                return "iPhone 6"
+            case "iPhone8,1":
+                return "iPhone 6S"
+            case "iPhone8,2":
+                return "iPhone 6S Plus"
+            case "iPhone8,4":
+                return "iPhone SE"
+            case "iPhone9,1":
+                return "iPhone 7 (CDMA)"
+            case "iPhone9,2":
+                return "iPhone 7 Plus (CDMA)"
+            case "iPhone9,3":
+                return "iPhone 7 (GSM)"
+            case "iPhone9,4":
+                return "iPhone 7 Plus (GSM)"
+            case "iPhone10,1":
+                return "iPhone 8 (CDMA)"
+            case "iPhone10,2":
+                return "iPhone 8 Plus (CDMA)"
+            case "iPhone10,3":
+                return "iPhone X (CDMA)"
+            case "iPhone10,4":
+                return "iPhone 8 (GSM)"
+            case "iPhone10,5":
+                return "iPhone 8 Plus (GSM)"
+            case "iPhone10,6":
+                return "iPhone X (GSM)"
+            // iPod Touch
+            case "iPod5,1":
+                return "iPod Touch 5th Generation"
+            case "iPod7,1":
+                return "iPod Touch 6th Generation"
+            // iPad
+            
+            // Apple TV
+            default:
+                return "Unknown Device"
+            
+        }
     }
     
     class func name() -> String {
@@ -206,27 +269,30 @@ class TealiumDeviceData {
         ]
     }
     
-    class func orientation() -> String {
+    class func orientation() -> Dictionary<String, Any> {
         
         let orientation = UIDevice.current.orientation
         
+        let isLandscape = orientation.isLandscape
+        var fullOrientation = ["device_orientation" : isLandscape ? "Landscape" : "Portrait"]
+        
         switch orientation {
         case .faceUp:
-            return "Face Up"
+            fullOrientation["device_full_orientation"] = "Face Up"
         case .faceDown:
-            return "Face Down"
+            fullOrientation["device_full_orientation"] = "Face Down"
         case .landscapeLeft:
-            return "Landscape Left"
+            fullOrientation["device_full_orientation"] = "Landscape Left"
         case .landscapeRight:
-            return "Landscape Right"
+            fullOrientation["device_full_orientation"] = "Landscape Right"
         case .portrait:
-            return "Portrait"
+            fullOrientation["device_full_orientation"] = "Portrait"
         case .portraitUpsideDown:
-            return "Portrait"
+            fullOrientation["device_full_orientation"] = "Portrait"
         case .unknown:
-            return TealiumDeviceDataValue.unknown
+            fullOrientation["device_full_orientation"] = TealiumDeviceDataValue.unknown
         }
-        
+        return fullOrientation
     }
     
     class func oSBuild() -> String {
